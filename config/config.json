@@ -5,7 +5,8 @@
   "port": "8080",
   "consul_server": "http://localhost:8500",
   "service_list":[
-    {"name": "AdminServer", "addr": "127.0.0.1", "Count": "1024", "ad_addr": "192.168.1.86", "template_path": "AdminServer"}
+    {"name": "AdminServer", "addr": "127.0.0.1", "Count": "1024", "ad_addr": "192.168.1.86", "template_path": "AdminServer"},
+    {"name": "PortalServer", "addr": "127.0.0.1", "Count": "1024", "ad_addr": "192.168.1.86", "template_path": "PortalServer"}
   ],
   "sql":{
     "driver": "mysql",

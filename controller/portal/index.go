@@ -1,4 +1,4 @@
-package user
+package portal
 
 import (
     "bytes"
@@ -7,15 +7,15 @@ import (
     "golang.org/x/net/context"
 )
 
-type userController struct {
+type portalController struct {
 }
-var controller = &userController{}
-var name = "user"
+var controller = &portalController{}
+var name = "portal"
 func Init(){
     base.AddController(name, controller)
 }
 
-func (a* userController)Index(ctx context.Context) (rs string , err error){
+func (a* portalController)Index(ctx context.Context) (rs string , err error){
     out := &bytes.Buffer{}
     view.NewView().Render(out, name + "/index",nil)
     return out.String(), nil

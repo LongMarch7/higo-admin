@@ -1,6 +1,7 @@
 package main
 
 import (
+    "github.com/LongMarch7/higo-admin/service/upload"
     "github.com/LongMarch7/higo/config"
     "github.com/LongMarch7/higo/app"
     "github.com/LongMarch7/higo/middleware"
@@ -155,10 +156,13 @@ func GateWay(config *config.Configer) {
                 {"post","/admin/portal/article_status_change",apiHandler("admin/portal:ArticleStatusChange")},
                 {"post","/admin/portal/article_edit_post",apiHandler("admin/portal:ArticleEditPost")},
                 {"post","/admin/upload",base.MakeReqDataMiddleware(
-                    utils.MakeUploadHandler(client.GetClientEndpoint(service.Name),"admin:Upload"))},
-                //user
-                {"get","/",htmlHandler("user:Index")},
-                {"get","/index",htmlHandler("user:Index")},
+                    utils.MakeAuthMiddleware(client.GetClientEndpoint(service.Name),"admin:Upload", upload.Upload))},
+            })
+        case "PortalServer":
+            client.AddEndpoint(app.CMiddleware(mw),app.CServiceName(service.Name))
+            cliConf.router.Add([]router.Routs{
+            {"get","/",htmlHandler("portal:Index")},
+            {"get","/index",htmlHandler("portal:Index")},
             })
         default:
             grpclog.Error("Not found server by name")

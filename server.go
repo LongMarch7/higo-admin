@@ -1,8 +1,8 @@
 package main
 import (
-    "github.com/LongMarch7/higo-admin/controller/admin/member"
-    "github.com/LongMarch7/higo-admin/controller/admin/portal"
-    "github.com/LongMarch7/higo-admin/controller/admin/setting"
+    admin_member "github.com/LongMarch7/higo-admin/controller/admin/member"
+    admin_portal "github.com/LongMarch7/higo-admin/controller/admin/portal"
+    admin_setting "github.com/LongMarch7/higo-admin/controller/admin/setting"
     "github.com/LongMarch7/higo/config"
     "github.com/LongMarch7/higo/db"
     "github.com/LongMarch7/higo/app"
@@ -10,12 +10,11 @@ import (
     "github.com/LongMarch7/higo/service/web"
     admin "github.com/LongMarch7/higo-admin/controller/admin"
     admin_user "github.com/LongMarch7/higo-admin/controller/admin/user"
-    user "github.com/LongMarch7/higo-admin/controller/user"
+    "github.com/LongMarch7/higo-admin/controller/portal"
     "github.com/LongMarch7/higo/util/global"
     "github.com/LongMarch7/higo/view"
     "google.golang.org/grpc/grpclog"
     "github.com/LongMarch7/higo/auth"
-    "strings"
 )
 
 type svrConfig struct{
@@ -29,9 +28,12 @@ type svrConfig struct{
 func InitAdminServer(){
     admin.Init()
     admin_user.Init()
-    user.Init()
-    member.Init()
-    setting.Init()
+    admin_portal.Init()
+    admin_member.Init()
+    admin_setting.Init()
+}
+
+func InitPortalServer(){
     portal.Init()
 }
 func Server(config *config.Configer) {
@@ -46,6 +48,8 @@ func Server(config *config.Configer) {
     switch global.SeverName {
     case "AdminServer":
         InitAdminServer()
+    case "PortalServer":
+        InitPortalServer()
     default:
         grpclog.Error("Not found server by name")
         return

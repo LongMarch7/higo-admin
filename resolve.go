@@ -136,6 +136,12 @@ func svrResolving(config *config.Configer) *svrConfig{
             if len(value.Addr) > 0 {
                 svrConf.sOpts = append(svrConf.sOpts,app.SServerAddr(value.Addr))
             }
+            if len(config.Port) > 0 {
+                svrConf.sOpts = append(svrConf.sOpts,app.SServerPort(config.Port))
+            }
+            if len(config.AdPort) > 0 {
+                svrConf.sOpts = append(svrConf.sOpts,app.SAdvertisePort(config.AdPort))
+            }
             if len(value.AdAddr) > 0 {
                 svrConf.sOpts = append(svrConf.sOpts,app.SAdvertiseAddress(value.AdAddr))
             }
