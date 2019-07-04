@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎页面-X-admin2.0</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" href="/static/css/font.css">
+    <link rel="stylesheet" href="/static/css/xadmin.css">
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="/static/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/static/js/xadmin.js"></script>
+    <script type="text/javascript" src="/static/js/cate.js"></script>
+    <script type="text/javascript" src="/static/js/utils.js"></script>
+</head>
+
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-card-body ">
+                    <table id="cate" class="layui-table layui-form" style="margin: 0px">
+                        <div class="layui-table-tool-temp">
+                            <div class="layui-btn-container">
+                                <button class="layui-btn layui-btn-sm" onclick="xadmin.open('添加分类','/admin/portal/cate_edit',600,500);" ><i class="layui-icon"></i>添加</button>
+                                <button onclick="changeCateStatusWithBatch(1)" class="layui-btn layui-btn-sm" style="background-color: #5FB878"><i class="layui-icon layui-icon-play"></i>批量开启</button>
+                                <button onclick="changeCateStatusWithBatch(2)" class="layui-btn layui-btn-sm layui-bg-orange" ><i class="layui-icon layui-icon-pause"></i>批量关闭</button>
+                                <button onclick="deleteCateWithBatch('delete','确定删除吗?')" class="layui-btn layui-btn-sm layui-btn-danger" ><i class="layui-icon layui-icon-delete"></i>批量删除</button>
+                                <button onclick="xadmin.open('恢复分类','/admin/portal/cate_restore');" class="layui-btn layui-btn-sm" style="background-color: #c0beb9" ><i class="layui-icon layui-icon-refresh"></i>恢复分类</button>
+                            </div>
+                        </div>
+                        <thead>
+                        <tr >
+                            <th width="20">
+                                <i class="layui-icon x-table-view" style="position: absolute;left: 0px" status='true' title="全部展开">&#xe625;</i>
+                                <input  lay-filter="checkAll" type="checkbox" name="checkAllBox" lay-skin="primary">
+                            </th>
+                            <th width="80">层级</th>
+                            <th width="70">ID</th>
+                            <th width="120">分类名</th>
+                            <th width="120">标题</th>
+                            <th >关键字</th>
+                            <th width="160">创建时间</th>
+                            <th width="160">更新时间</th>
+                            <th width="250">操作</th>
+                        </thead>
+                        <tbody class="x-cate">
+                        {[range $index1,$value1 := .CateList]}
+                        {[if eq $value1.ParentId 0]}
+                        <tr cate-id={[$value1.Id]} fid={[$value1.ParentId]} status='true'>
+                            <td>
+                                <input value="{[$value1.Id]}" lay-filter="cateCheck" type="checkbox" name="cateCheckBox" lay-skin="primary">
+                            </td>
+                            <td style="color: #FF5722">├ ① </td>
+                            <td>{[$value1.Id]} </td>
+                            <td>
+                                {[$value1.Name]}
+                            </td>
+                            <td> {[$value1.SeoTitle]}</td>
+                            <td> {[$value1.SeoKeywords]}</td>
+                            <td> {[convertt $value1.CreateTime]}</td>
+                            <td> {[convertt $value1.UpdateTime]}</td>
+                            <td class="td-manage">
+                                {[if eq $value1.Status 1]}
+                                <a onclick="changeCateStatus({[$value1.Id]},this)" href="javascript:;"  title="发布">
+                                    <i class="layui-icon layui-icon-pause"></i>
+                                </a>
+                                {[else]}
+                                <a  onclick="changeCateStatus({[$value1.Id]},this)" href="javascript:;"  title="不发布">
+                                    <i class="layui-icon layui-icon-play"></i>
+                                </a>
+                                {[end]}
+                                <a title="编辑"  onclick="editCate('编辑分类',{[$value1.Id]},{[$value1.ParentId]}, 1)" href="javascript:;">
+                                    <i class="layui-icon">&#xe642;</i>
+                                </a>
+                                <a title="添加子栏目"  onclick="editCate('添加子分类',0,{[$value1.Id]}, 2)" href="javascript:;">
+                                    <i class="layui-icon layui-icon-next"></i>
+                                </a>
+                                <a title="删除" onclick="deleteCate({[$value1.Id]}, 'delete', '确定删除吗?', this)" href="javascript:;">
+                                    <i class="layui-icon">&#xe640;</i>
+                                </a>
+                            </td>
+                        </tr>
+                        {[range $index2,$value2 := $.CateList]}
+                        {[if eq $value2.ParentId $value1.Id]}
+                        <tr cate-id={[$value2.Id]} fid={[$value2.ParentId]} status='true' >
+                            <td>
+                                <input value="{[$value2.Id]}" lay-filter="cateCheck" type="checkbox" name="cateCheckBox" lay-skin="primary">
+                            </td>
+                            <td style="color: #01AAED">&nbsp;&nbsp;&nbsp;&nbsp;├ ② </td>
+                            <td>{[$value2.Id]} </td>
+                            <td>
+                                {[$value2.Name]}
+                            </td>
+                            <td> {[$value2.SeoTitle]}</td>
+                            <td> {[$value2.SeoKeywords]}</td>
+                            <td> {[convertt $value2.CreateTime]}</td>
+                            <td> {[convertt $value2.UpdateTime]}</td>
+                            <td class="td-manage">
+                                {[if eq $value2.Status 1]}
+                                <a onclick="changeCateStatus({[$value2.Id]},this)" href="javascript:;"  title="发布">
+                                    <i class="layui-icon layui-icon-pause"></i>
+                                </a>
+                                {[else]}
+                                <a  onclick="changeCateStatus({[$value2.Id]},this)" href="javascript:;"  title="不发布">
+                                    <i class="layui-icon layui-icon-play"></i>
+                                </a>
+                                {[end]}
+                                <a title="编辑"  onclick="editCate('编辑分类', {[$value2.Id]}, {[$value2.ParentId]}, 2)" href="javascript:;">
+                                    <i class="layui-icon">&#xe642;</i>
+                                </a>
+                                <a title="添加子栏目"  onclick="editCate('添加子分类',0,{[$value2.Id]}, 3)" href="javascript:;">
+                                    <i class="layui-icon layui-icon-next"></i>
+                                </a>
+                                <a title="删除" onclick="deleteCate({[$value2.Id]}, 'delete','确定删除吗?', this)" href="javascript:;">
+                                    <i class="layui-icon">&#xe640;</i>
+                                </a>
+                            </td>
+                        </tr>
+                        {[range $index3,$value3 := $.CateList]}
+                        {[if eq $value3.ParentId $value2.Id]}
+                        <tr cate-id={[$value3.Id]} fid={[$value3.ParentId]} status='true'>
+                            <td>
+                                <input value="{[$value3.Id]}" lay-filter="cateCheck" type="checkbox" name="cateCheckBox" lay-skin="primary">
+                            </td>
+                            <td style="color: #5FB878">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├ ③ </td>
+                            <td>{[$value3.Id]} </td>
+                            <td>
+                                {[$value3.Name]}
+                            </td>
+                            <td> {[$value3.SeoTitle]}</td>
+                            <td> {[$value3.SeoKeywords]}</td>
+                            <td> {[convertt $value3.CreateTime]}</td>
+                            <td> {[convertt $value3.UpdateTime]}</td>
+                            <td class="td-manage">
+                                {[if eq $value3.Status 1]}
+                                <a onclick="changeCateStatus({[$value3.Id]},this)" href="javascript:;"  title="发布">
+                                    <i class="layui-icon layui-icon-pause"></i>
+                                </a>
+                                {[else]}
+                                <a  onclick="changeCateStatus({[$value3.Id]},this)" href="javascript:;"  title="不发布">
+                                    <i class="layui-icon layui-icon-play"></i>
+                                </a>
+                                {[end]}
+                                <a title="编辑"  onclick="editCate('编辑分类',{[$value3.Id]},{[$value3.ParentId]}, 3)" href="javascript:;">
+                                    <i class="layui-icon">&#xe642;</i>
+                                </a>
+                                <a title="删除" onclick="deleteCate({[$value3.Id]}, 'delete', '确定删除吗?', this)" href="javascript:;">
+                                    <i class="layui-icon">&#xe640;</i>
+                                </a>
+                            </td>
+                        </tr>
+                        {[end]}
+                        {[end]}
+                        {[end]}
+                        {[end]}
+                        {[end]}
+                        {[end]}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

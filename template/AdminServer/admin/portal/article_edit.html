@@ -1,0 +1,292 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <link rel="stylesheet" href="/static/css/xadmin.css">
+    <script src="/static/lib/layui/layui.js" charset="utf-8"></script>
+    <link rel="stylesheet" href="/static/froala/css/froala_editor.css">
+    <link rel="stylesheet" type="text/css" href="/static/font-awesome-4.7.0/css/font-awesome.min.css"/>
+    <!-- <link rel="stylesheet" href="/static/froala/css/froala_style.css"> -->
+    <link rel="stylesheet" href="/static/froala/css/plugins/code_view.css">
+    <link rel="stylesheet" href="/static/froala/css/plugins/draggable.css">
+    <link rel="stylesheet" href="/static/froala/css/plugins/colors.css">
+    <link rel="stylesheet" href="/static/froala/css/plugins/emoticons.css">
+    <link rel="stylesheet" href="/static/froala/css/plugins/image_manager.css">
+    <link rel="stylesheet" href="/static/froala/css/plugins/image.css">
+    <link rel="stylesheet" href="/static/froala/css/plugins/line_breaker.css">
+    <link rel="stylesheet" href="/static/froala/css/plugins/table.css">
+    <link rel="stylesheet" href="/static/froala/css/plugins/char_counter.css">
+    <link rel="stylesheet" href="/static/froala/css/plugins/video.css">
+    <link rel="stylesheet" href="/static/froala/css/plugins/fullscreen.css">
+    <link rel="stylesheet" href="/static/froala/css/plugins/file.css">
+    <link rel="stylesheet" href="/static/froala/css/plugins/quick_insert.css">
+    <link rel="stylesheet" href="/static/froala/css/plugins/help.css">
+    <link rel="stylesheet" href="/static/froala/css/plugins/special_characters.css">
+    <link rel="stylesheet" href="/static/froala/js/codemirror.min.css">
+    <link rel="stylesheet" href="/static/froala/css/themes/red.css">
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="/static/froala/css/froala_style.css">
+    <title>编辑文章</title>
+    <style>
+        ol {
+            list-style-type: decimal;
+        }
+        ol li {
+            list-style-type: decimal;
+            list-style-position: inside;
+        }
+        ul li {
+            list-style: disc;
+            list-style-position: inside;
+        }
+        ul {
+            list-style-type: disc;
+        }
+        ol, ul {
+            display: block;
+            -webkit-margin-before: 1em;
+            -webkit-margin-after: 1em;
+            -webkit-margin-start: 0px;
+            -webkit-margin-end: 0px;
+            -webkit-padding-start: 40px;
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+        dd ul{
+            padding-left: 10px;
+        }
+        .layui-tree li{
+            list-style: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="layui-fluid">
+    <div class="layui-row">
+        <form id="form-data" class="layui-form">
+            <div class="layui-form-item">
+                <label class="layui-form-label" ><span style="color: red">*</span>文章分类</label>
+                <div class="layui-input-inline">
+                    <div class="layui-unselect layui-form-select downpanel">
+                        <div class="layui-select-title">
+                            {[if eq .NowCate.CategoryId 0 ]}
+                            <span class="layui-input layui-unselect" id="treeclass" style="text-align: left;line-height:38px;">分类选择</span>
+                            <input type="hidden" name="cate" value="0">
+                            {[else]}
+                            <span class="layui-input layui-unselect" id="treeclass" style="text-align: left;line-height:38px;">{[.NowCate.Name]}</span>
+                            <input type="hidden" name="cate" value="{[.NowCate.CategoryId]}">
+                            {[end]}
+                            <i class="layui-edge"></i>
+                        </div>
+                        <dl class="layui-anim layui-anim-upbit">
+                            <dd>
+                                <ul id="classtree"></ul>
+                            </dd>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="article_title" class="layui-form-label">
+                    <span style="color: red">*</span>标题
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="article_title" name="article_title"
+                           autocomplete="off" class="layui-input" value="{[.ArticleInfo.ArticleTitle]}">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">查看数</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="article_hits" autocomplete="off" class="layui-input" value="{[.ArticleInfo.ArticleHits]}">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">收藏数</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="article_favorites"  autocomplete="off" class="layui-input" value="{[.ArticleInfo.ArticleFavorites]}">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">点赞数</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="article_like"  autocomplete="off" class="layui-input" value="{[.ArticleInfo.ArticleLike]}">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">评论数</label>
+                    <div class="layui-input-inline">
+                        <input type="tel" name="comment_count" autocomplete="off" class="layui-input" value="{[.ArticleInfo.CommentCount]}">
+                    </div>
+                </div>
+            </div>
+            <div class="layui-form-item"><label class="layui-form-label">标签</label>
+                <div class="layui-input-block">
+                    {[range $index,$value := .TagList]}
+                    <input type="checkbox" name="tag" value="{[$value.Id]}" title="{[$value.Name]}" {[if eq $value.Status 1]} checked {[end]}>
+                    {[end]}
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <label for="article_keywords" class="layui-form-label">
+                    关键字
+                </label>
+                <div class="layui-input-block">
+                    <input type="text" id="article_keywords" name="article_keywords"
+                           autocomplete="off" class="layui-input" value="{[.ArticleInfo.ArticleKeywords]}">
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label for="article_excerpt" class="layui-form-label">摘要</label>
+                <div class="layui-input-block">
+                    <textarea id="article_excerpt" name="article_excerpt" placeholder="请输入摘要" class="layui-textarea">{[.ArticleInfo.ArticleExcerpt]}</textarea>
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label for="description" class="layui-form-label">内容</label>
+                <div class="layui-input-block">
+                    <div id="edit"></div>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <input type="hidden" name="id" id="id" value="{[.ArticleInfo.Id]}"/>
+                <input type="hidden" name="article_content" id="article_content" value="{[.ArticleInfo.ArticleContent]}"/>
+                <button  class="layui-btn" lay-filter="sub" lay-submit="" style="margin-left:110px">
+                    提交
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+<script type="text/javascript" src="/static/froala/js/codemirror.min.js"></script>
+<script type="text/javascript" src="/static/froala/js/xml.min.js"></script>
+<script type="text/javascript" src="/static/froala/js/froala_editor.min.js" ></script>
+<script type="text/javascript" src="/static/froala/js/plugins/align.min.js"></script>
+<script type="text/javascript" src="/static/froala/js/plugins/char_counter.min.js"></script>
+<script type="text/javascript" src="/static/froala/js/plugins/code_beautifier.min.js"></script>
+<script type="text/javascript" src="/static/froala/js/plugins/code_view.min.js"></script>
+<script type="text/javascript" src="/static/froala/js/plugins/colors.min.js"></script>
+<script type="text/javascript" src="/static/froala/js/plugins/draggable.min.js"></script>
+<script type="text/javascript" src="/static/froala/js/plugins/emoticons.min.js"></script>
+<script type="text/javascript" src="/static/froala/js/plugins/entities.min.js"></script>
+<script type="text/javascript" src="/static/froala/js/plugins/file.min.js"></script>
+<script type="text/javascript" src="/static/froala/js/plugins/font_size.min.js"></script>
+<script type="text/javascript" src="/static/froala/js/plugins/font_family.min.js"></script>
+<script type="text/javascript" src="/static/froala/js/plugins/fullscreen.min.js"></script>
+<script type="text/javascript" src="/static/froala/js/plugins/image.min.js"></script>
+<script type="text/javascript" src="/static/froala/js/plugins/image_manager.min.js"></script>
+<script type="text/javascript" src="/static/froala/js/plugins/line_breaker.min.js"></script>
+<script type="text/javascript" src="/static/froala/js/plugins/inline_style.min.js"></script>
+<script type="text/javascript" src="/static/froala/js/plugins/link.min.js"></script>
+<script type="text/javascript" src="/static/froala/js/plugins/lists.min.js"></script>
+<script type="text/javascript" src="/static/froala/js/plugins/paragraph_format.min.js"></script>
+<script type="text/javascript" src="/static/froala/js/plugins/paragraph_style.min.js"></script>
+<script type="text/javascript" src="/static/froala/js/plugins/quick_insert.min.js"></script>
+<script type="text/javascript" src="/static/froala/js/plugins/quote.min.js"></script>
+<script type="text/javascript" src="/static/froala/js/plugins/table.min.js"></script>
+<script type="text/javascript" src="/static/froala/js/plugins/save.min.js"></script>
+<script type="text/javascript" src="/static/froala/js/plugins/url.min.js"></script>
+<script type="text/javascript" src="/static/froala/js/plugins/video.min.js"></script>
+<script type="text/javascript" src="/static/froala/js/plugins/help.min.js"></script>
+<script type="text/javascript" src="/static/froala/js/plugins/print.min.js"></script>
+<script type="text/javascript" src="/static/froala/js/plugins/special_characters.min.js"></script>
+<script type="text/javascript" src="/static/froala/js/plugins/word_paste.min.js"></script>
+<script src="/static/froala/js/languages/zh_cn.js"></script>
+<script src="/static/lib/layui/layui.js" charset="utf-8"></script>
+<script type="text/javascript" src="/static/js/system.js"></script>
+<script type="text/javascript">
+    layui.use(['element', 'tree', 'layer', 'form'], function () {
+        var $ = layui.jquery, tree = layui.tree,form = layui.form;
+        var test = '{[.CateList]}'
+        var obj = JSON.parse(test);
+        tree({
+            elem: "#classtree"
+            ,
+            nodes: obj,
+            click: function (node) {
+                var $select = $($(this)[0].elem).parents(".layui-form-select");
+                $select.removeClass("layui-form-selected").find(".layui-select-title span").html(node.name).end().find("input:hidden[name='cate']").val(node.id);
+            }
+        });
+        $(".downpanel").on("click", ".layui-select-title", function (e) {
+            $(".layui-form-select").not($(this).parents(".layui-form-select")).removeClass("layui-form-selected");
+            $(this).parents(".downpanel").toggleClass("layui-form-selected");
+            layui.stope(e);
+        }).on("click", "dl i", function (e) {
+            layui.stope(e);
+        });
+        $(document).on("click", function (e) {
+            $(".layui-form-select").removeClass("layui-form-selected");
+        });
+
+        form.on('submit(sub)',
+                function(data) {
+                    var html=$('#edit').froalaEditor('html.get', true); //返回富文本编辑里面的html代码
+                    $("#article_content").val(html)
+                    formSubmit('/admin/portal/article_edit_post', $("#form-data").serialize(),"alert","reload");
+                    return false;
+                });
+    });
+    $(function (){
+        //超大屏幕的功能按钮
+        var toolbarButtons   = ['fullscreen', 'bold', 'italic', 'underline', 'strikeThrough', 'subscript', 'superscript', 'fontFamily', 'fontSize', '|', 'color', 'emoticons', 'inlineStyle', 'paragraphStyle', '|', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', 'insertHR', '-', 'insertLink', 'insertImage', 'insertVideo', 'insertFile', 'insertTable', 'undo', 'redo', 'clearFormatting', 'selectAll', 'html'];
+        //大屏幕的功能按钮
+        var toolbarButtonsMD = ['fullscreen', 'bold', 'italic', 'underline', 'fontFamily', 'fontSize', 'color', 'paragraphStyle', 'paragraphFormat', 'align', 'formatOL', 'formatUL', 'outdent', 'indent', 'quote', 'insertHR', 'insertLink', 'insertImage', 'insertVideo', 'insertFile', 'insertTable', 'undo', 'redo', 'clearFormatting'];
+        //小屏幕的功能按钮
+        var toolbarButtonsSM = ['fullscreen', 'bold', 'italic', 'underline', 'fontFamily', 'fontSize', 'insertLink', 'insertImage', 'insertTable', 'undo', 'redo'];
+        //手机的功能按钮
+        var toolbarButtonsXS = ['bold', 'italic', 'fontFamily', 'fontSize', 'undo', 'redo'];
+        //var pid = $('#pid').val();
+        //编辑器初始化并赋值
+        $('#edit').on('froalaEditor.initialized', function (e, editor) {
+             var content = $("#article_content").val()
+             $('#edit').froalaEditor('html.set',content);
+        })
+                .froalaEditor({
+                    placeholderText: '请输入内容',
+                    charCounterCount       : true,//默认
+                    // charCounterMax         : -1,//默认
+                    saveInterval            : 0,//不自动保存，默认10000
+                    // theme                    : "red",
+                    height                   : "360px",
+                    toolbarBottom           : false,//默认
+                    toolbarButtonsMD        : toolbarButtonsMD,
+                    toolbarButtonsSM        : toolbarButtonsSM,
+                    toolbarButtonsXS        : toolbarButtonsXS,
+                    toolbarInline           : false,//true选中设置样式,默认false
+                    imageUploadMethod       : 'POST',
+                    heightMin: 360,
+                    charCounterMax: 3000,
+                    // imageUploadURL: "uploadImgEditor",
+                    imageParams: { postId: "123" },
+                    params: {
+                        acl: '01',
+                        AWSAccessKeyId: '02',
+                        policy: '03',
+                        signature: '04',
+                    },
+                    autosave: true,
+                    autosaveInterval: 2500,
+                    saveURL: 'hander/FroalaHandler.ashx',
+                    saveParams: { postId: '1'},
+                    spellcheck: false,
+                    imageUploadURL: '/admin/upload',//上传到本地服务器
+                    imageUploadParams: {pid: '{[.Id]}'},
+                    imageDeleteURL: 'lib/delete_image.php',//删除图片
+                    imagesLoadURL: 'lib/load_images.php',//管理图片
+                    videoUploadURL:'/admin/upload',
+                    videoUploadParams: {pid: '{[.Id]}'},
+                    fileUploadURL: '/admin/upload',
+                    fileUploadParams: {pid: '{[.Id]}'},
+                    enter: $.FroalaEditor.ENTER_BR,
+                    language: 'zh_cn',
+                    // toolbarButtons: ['bold', 'italic', 'underline', 'paragraphFormat', 'align','color','fontSize','insertImage','insertTable','undo', 'redo']
+                });
+    })
+
+
+</script>
+
+</body>

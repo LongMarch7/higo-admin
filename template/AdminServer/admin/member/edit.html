@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html class="x-admin-sm">
+
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎页面-X-admin2.2</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" href="/static/css/font.css">
+    <link rel="stylesheet" href="/static/css/xadmin.css">
+    <script type="text/javascript" src="/static/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/static/js/xadmin.js"></script>
+    <script type="text/javascript" src="/static/js/system.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<form id="form-data" method="post"  class="layui-form">
+    <div class="layui-row" style="margin-top: 20px;">
+        <div class="layui-col-md6">
+            <div class="layui-form-item">
+                <label for="user_login" class="layui-form-label">
+                    <span class="x-red">*</span>登录名
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="user_login" name="user_login" required="" lay-verify="required"
+                           autocomplete="off" class="layui-input" value="{[.UserInfo.UserLogin]}">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    <span class="x-red">*</span>将会成为您唯一的登入名
+                </div>
+            </div>
+            {[if eq .UserInfo.Id 0]}
+            <div class="layui-form-item">
+                <label for="user_type" class="layui-form-label">
+                    用户类型
+                </label>
+                <div class="layui-input-inline">
+                    <input type="radio" id="user_type" name="user_type" value="2" lay-skin="primary" title="start" checked="checked">
+                    <input type="radio" id="user_type" name="user_type" value="3" lay-skin="primary" title="ad">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                    业务区分
+                </div>
+            </div>
+            {[end]}
+            <div class="layui-form-item">
+                <label for="bind_id" class="layui-form-label">
+                    绑定账号
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="bind_id" name="bind_id"
+                           autocomplete="off" class="layui-input" value="{[.UserInfo.BindId]}">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="user_nickname" class="layui-form-label">
+                    昵称
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="user_nickname" name="user_nickname"
+                           autocomplete="off" class="layui-input" value="{[.UserInfo.UserNickname]}">
+                </div>
+                <div class="layui-form-mid layui-word-aux"></div>
+            </div>
+            <div class="layui-form-item">
+                <label for="signature" class="layui-form-label">
+                    个性签名
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="signature" name="signature"
+                           autocomplete="off" class="layui-input" value="{[.UserInfo.Signature]}">
+                </div>
+                <div class="layui-form-mid layui-word-aux"></div>
+            </div>
+            <div class="layui-form-item">
+                <label for="avatar" class="layui-form-label">
+                    上传头像
+                </label>
+                <div class="layui-upload">
+                    <div class="layui-upload-drag" id="avatar">
+                        <i class="layui-icon"></i>
+                        <p>点击上传，或将文件拖拽到此处</p>
+                    </div>
+                    <input type="hidden" id="url_avatar" name="avatar" value="{[.UserInfo.Avatar]}">
+                </div>
+                <div class="layui-form-mid layui-word-aux"></div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                    性别
+                </label>
+                <div class="layui-input-inline">
+                    <input type="radio" name="sex" value="1" lay-skin="primary" title="保密" {[if le .UserInfo.Sex 1]} checked="checked" {[end]}>
+                    <input type="radio" name="sex" value="2" lay-skin="primary" title="男" {[if eq .UserInfo.Sex 2]} checked="checked" {[end]}>
+                    <input type="radio" name="sex" value="3" lay-skin="primary" title="女" {[if eq .UserInfo.Sex 3]} checked="checked" {[end]}>
+                </div>
+                <div class="layui-form-mid layui-word-aux"></div>
+            </div>
+            <div class="layui-form-item">
+                <label for="birthday" class="layui-form-label">
+                    生日
+                </label>
+                <div class="layui-input-inline">
+                    <input class="layui-input layui-input-inline" placeholder="生日" name="birthday" id="birthday">
+                </div>
+                <div class="layui-form-mid layui-word-aux"></div>
+            </div>
+            <div class="layui-form-item">
+                <label for="user_email" class="layui-form-label">
+                    邮箱
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="user_email" name="user_email"
+                           autocomplete="off" class="layui-input" value="{[.UserInfo.UserEmail]}">
+                </div>
+                <div class="layui-form-mid layui-word-aux"></div>
+            </div>
+            <div class="layui-form-item">
+                <label for="L_pass" class="layui-form-label">
+                    登录密码
+                </label>
+                <div class="layui-input-inline">
+                    <input type="password" id="L_pass" name="user_pass"
+                           autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label for="P_pass" class="layui-form-label">
+                    支付密码
+                </label>
+                <div class="layui-input-inline">
+                    <input type="password" id="P_pass" name="pay_pass"
+                           autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">
+                </div>
+            </div>
+            {[if .IsSuper]}
+            <div class="layui-form-item">
+                <label for="score" class="layui-form-label">
+                    等级
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="score" name="score"
+                           autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux"></div>
+            </div>
+            <div class="layui-form-item">
+                <label for="coin" class="layui-form-label">
+                    金币
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="coin" name="coin"
+                           autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux"></div>
+            </div>
+            <div class="layui-form-item">
+                <label for="balance" class="layui-form-label">
+                    余额
+                </label>
+                <div class="layui-input-inline">
+                    <input type="text" id="balance" name="balance"
+                           autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux"></div>
+            </div>
+            {[end]}
+            <div class="layui-form-item">
+                <label class="layui-form-label">
+                </label>
+                <input type="hidden" id="Id" name="id" value="{[.UserInfo.Id]}">
+                <button  class="layui-btn" lay-filter="sub" lay-submit="">
+                    提交
+                </button>
+                <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+            </div>
+        </div>
+    </div>
+</form>
+<script>
+    layui.use(['form', 'laydate', 'upload','layer'],
+            function() {
+                $ = layui.jquery;
+                var form = layui.form,
+                        layer = layui.layer,
+                        laydate = layui.laydate,
+                        upload = layui.upload;
+
+                laydate.render({
+                    elem: '#birthday',
+                    value: new Date({[.UserInfo.Birthday]}*1000),
+                type: 'datetime'
+            });
+
+                upload.render({
+                    elem: '#avatar'
+                    ,url: '/upload/'
+                    ,size: 60
+                    ,done: function(res){
+                        console.log(res)
+                    }
+                });
+                //自定义验证规则
+                form.verify({
+                    pass: [/(.+){8,16}$/, '密码必须6到12位']
+                });
+
+                //监听提交
+                form.on('submit(sub)',
+                        function(data) {
+                            formSubmit('/admin/member/edit_post', $("#form-data").serialize(),"alert","reload");
+                            return false;
+                        });
+                $(".power .layui-form-radio").hover(function () {
+                    remark = $(this).prev();
+                    layer.tips(remark.attr("data-d"), this, {
+                        tips: [3, "#4794ec"]
+                    });
+                })
+            });
+</script>
+<script>var _hmt = _hmt || []; (function() {
+    var hm = document.createElement("script");
+    hm.src = "https://hm.baidu.com/hm.js?b393d153aeb26b46e9431fabaf0f6190";
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(hm, s);
+})();</script>
+</body>
+
+</html>

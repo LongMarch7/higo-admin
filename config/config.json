@@ -1,0 +1,73 @@
+{
+  "domain": "localhost",
+  "ssl_key": "",
+  "ssl_crt": "",
+  "port": "8080",
+  "consul_server": "http://localhost:8500",
+  "service_list":[
+    {"name": "AdminServer", "addr": "127.0.0.1", "Count": "1024", "ad_addr": "192.168.1.86", "template_path": "AdminServer"}
+  ],
+  "sql":{
+    "driver": "mysql",
+    "user":"root",
+    "pwd": "123456",
+    "net": "tcp",
+    "addr": "127.0.0.1",
+    "port": "13306",
+    "db": "higo",
+    "max_open_conn": 100,
+    "max_idle_conn": 100,
+    "show": true,
+    "level": "debug",
+    "file": "db/sql/default.sql"
+  },
+  "memcache":{
+    "max_idle_conn": 100,
+    "server":[
+      "127.0.0.1:11211"
+    ]
+  },
+  "retry_count": 3,
+  "retry_time": 0,
+  "cli_middleware":{
+    "zipkin_url": "http://127.0.0.1:9411/api/v1/spans",
+    "zipkinhost_port": "localhost:0",
+    "zipkin_debug": false,
+    "zipkin_max_logs": 1000,
+    "ratelimit_burst": 100,
+    "ratelimit_interval": 10000000,
+    "hystrix_timeout": 3000,
+    "hystrix_mcr": 100,
+    "hystrix_rvt": 50,
+    "hystrix_sw": 5000,
+    "hystrix_ept": 50
+  },
+  "svr_middleware":{
+    "zipkin_url": "http://127.0.0.1:9411/api/v1/spans",
+    "zipkinhost_port": "localhost:0",
+    "zipkin_debug": false,
+    "zipkin_max_logs": 1000,
+    "ratelimit_burst": 100,
+    "ratelimit_interval": 10000000,
+    "hystrix_timeout": 3000,
+    "hystrix_mcr": 100,
+    "hystrix_rvt": 50,
+    "hystrix_sw": 5000,
+    "hystrix_ept": 50
+  },
+  "logger":{
+    "type": "console",
+    "level": "debug",
+    "encoding": "console",
+    "CallFull": false,
+    "max_size": 10,
+    "max_age": 1,
+    "max_backups": 7,
+    "local_time": true,
+    "Compress": false
+  },
+  "root_path": "E:/go_project/higo/src/github.com/LongMarch7/higo-admin/",
+  "static_path":"public/static/",
+  "upload_path":"public/upload/",
+  "template_path": "template/"
+}

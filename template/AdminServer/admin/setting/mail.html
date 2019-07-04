@@ -1,0 +1,127 @@
+
+
+<!DOCTYPE html>
+<html class="x-admin-sm">
+<head>
+    <meta charset="UTF-8">
+    <title>后台登录-{[.AppName]}.{[.Version]}</title>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="stylesheet" href="/static/css/font.css">
+    <link rel="stylesheet" href="/static/css/xadmin.css">
+    <script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+    <script src="/static/lib/layui/layui.js" charset="utf-8"></script>
+    <script src="/static/js/system.js" charset="utf-8"></script>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div class="layui-fluid">
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md12">
+            <div class="layui-card">
+                <div class="layui-tab layui-tab-card">
+                    <ul class="layui-tab-title">
+                        <li class="layui-this">邮箱配置</li>
+                        <li>邮箱测试</li>
+                    </ul>
+                    <div class="layui-tab-content">
+                        <div class="layui-tab-item layui-show">
+                            <form id="config-mail" class="layui-form">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">SMTP服务器</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="smtp_server" value="{[.Info.SmtpServer]}" class="layui-input">
+                                    </div>
+                                    <div class="layui-form-mid layui-word-aux">如：smtp.163.com</div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">SMTP端口号</label>
+                                    <div class="layui-input-inline" style="width: 80px;">
+                                        <input type="text" name="cache" lay-verify="number" value="{[.Info.Cache]}" class="layui-input">
+                                    </div>
+                                    <div class="layui-form-mid layui-word-aux">一般为 25 或 465</div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">发件人邮箱</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="send_email" value="{[.Info.SendMail]}" lay-verify="email" autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">发件人昵称</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="send_nickname" value="{[.Info.SendNickname]}" autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">邮箱登入密码</label>
+                                    <div class="layui-input-inline">
+                                        <input type="password" name="send_pwd" value="{[.Info.SendPwd]}"  autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-input-block">
+                                        <button class="layui-btn" lay-submit lay-filter="set_system_email">确认保存</button>
+                                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="layui-tab-item">
+                            <form id="test-mail" class="layui-form">
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">收件人</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="receive" lay-verify="email"  value="497316113@qq.com" class="layui-input">
+                                    </div>
+                                    <div class="layui-form-mid layui-word-aux"></div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <label class="layui-form-label">主题</label>
+                                    <div class="layui-input-inline">
+                                        <input type="text" name="send_subject" value="test" autocomplete="off" class="layui-input">
+                                    </div>
+                                </div>
+                                <div class="layui-form-item layui-form-text">
+                                    <label class="layui-form-label">内容</label>
+                                    <div class="layui-input-block">
+                                        <textarea name="send_data" placeholder="请输入测试信息" class="layui-textarea"></textarea>
+                                    </div>
+                                </div>
+                                <div class="layui-form-item">
+                                    <div class="layui-input-block">
+                                        <button class="layui-btn" lay-submit lay-filter="test_system_email">邮箱测试</button>
+                                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(function () {
+        layui.use(['form','element'], function () {
+            var form = layui.form;
+
+            form.on('submit(set_system_email)', function (data) {
+                submit('/admin/setting/mail_conf', "post", $("#config-mail").serialize());
+                return false
+            })
+            form.on('submit(test_system_email)', function (data) {
+                submit('/admin/setting/mail_test', "post", $("#test-mail").serialize());
+                return false
+            })
+        })
+    })
+</script>
+</body>
+</html>

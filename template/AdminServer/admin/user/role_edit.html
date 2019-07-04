@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎页面-X-admin2.0</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="stylesheet" href="/static/css/font.css">
+    <link rel="stylesheet" href="/static/css/xadmin.css">
+    <script src="/static/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/static/js/system.js"></script>
+    <!--[if lt IE 9]>
+    <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+    <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+<div class="x-body">
+    <form id="form-data" method="post" class="layui-form layui-form-pane" style="margin-bottom: 0px; margin-top: 10px;">
+        {[if ne .Id ""]}
+        <div class="layui-form-item">
+            <label for="RoleParentName" class="layui-form-label">
+                父角色
+            </label>
+            <label for="RoleName" class="layui-form-label">
+                {[.RoleParentName]}
+            </label>
+        </div>
+        {[else]}
+        <div class="layui-form-item">
+            <label for="RoleParentName" class="layui-form-label">
+                选择父角色
+            </label>
+            <div class="layui-input-block role">
+                {[range $key,$value := .RolesMap]}
+                <input type="radio" name="role_id" lay-filter="parentRoleSelect" value="{[$value.ID]}" data-d="{[$value.Remark]}" lay-skin="primary" title="{[$value.Name]}"
+                       {[if eq $value.Status 1]}
+                       checked="checked"
+                       {[end]}
+                >
+                {[end]}
+            </div>
+        </div>
+        {[end]}
+        <div class="layui-form-item">
+            <label for="RoleName" class="layui-form-label">
+                <span class="x-red">*</span>角色名
+            </label>
+            <div class="layui-input-inline">
+                <input type="text" id="RoleName" name="RoleName" required="" lay-verify="required|rolename"
+                       autocomplete="off" class="layui-input" value="{[.RoleName]}">
+            </div>
+        </div>
+        {[if ne .ParentId ""]}
+        <div class="layui-form-item layui-form-text">
+            <label class="layui-form-label">
+                拥有权限
+            </label>
+            <table  class="layui-table layui-input-block">
+                <tbody>
+
+                {[range $key1,$value1 := .CurrUserMenu]}
+                {[if le $value1.ParentId 0]}
+                <tr>
+                    <td>
+                        <input  type="checkbox" name="Power" lay-filter="powerCheck" value="{[$value1.Id]}" lay-skin="primary" title="{[$value1.Name]}"
+                               {[if eq $value1.Status 1]}
+                               checked="checked"
+                               {[end]}
+                        >
+                    </td>
+                    <td></td>
+                </tr>
+                {[range $key2,$value2 := $.CurrUserMenu]}
+                {[if eq $value2.ParentId $value1.Id]}
+                <tr>
+                    <td style="min-width: 160px;">
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;├
+                        <input lay-filter="powerCheck" lay-skin="primary" name="Power" type="checkbox" value="{[$value2.Id]}" title="{[$value2.Name]}"
+                               {[if eq $value2.Status 1]}
+                               checked="checked"
+                               {[end]}
+                        >
+                    </td>
+                    <td>
+                        <div class="layui-input-block">
+                            {[range $key3,$value3 := $.CurrUserMenu]}
+                            {[if eq $value3.ParentId $value2.Id]}
+                            <input lay-filter="powerCheck" lay-skin="primary" name="Power" type="checkbox" value="{[$value3.Id]}" title="{[$value3.Name]}"
+                                   {[if eq $value3.Status 1]}
+                                   checked="checked"
+                                   {[end]}
+                            >
+                            {[end]}
+                            {[end]}
+                        </div>
+                    </td>
+                </tr>
+                {[end]}
+                {[end]}
+                {[end]}
+                {[end]}
+
+                </tbody>
+            </table>
+        </div>
+        {[end]}
+        <div class="layui-form-item layui-form-text">
+            <label for="Intro" class="layui-form-label">
+                描述
+            </label>
+            <div class="layui-input-block">
+                <textarea placeholder="请输入内容" id="Intro" name="Intro" class="layui-textarea">{[.Intro]}</textarea>
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <input type="hidden" id="Id" name="Id" value="{[.Id]}">
+            <input type="hidden" id="ParentId" name="ParentId" value="{[.ParentId]}">
+            <input type="hidden" name="NoCheck" id="NoCheck" value="">
+            <button class="layui-btn" lay-submit="" lay-filter="sub">提交</button>
+            <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+        </div>
+
+    </form>
+</div>
+<script>
+    layui.use(['form','layer'], function(){
+        $ = layui.jquery;
+        var form = layui.form;
+        var layer = layui.layer;
+
+        form.verify({
+            rolename: function(value, item){ //value：表单的值、item：表单的DOM对象
+                if(!new RegExp("^[a-zA-Z0-9_\\s·]+$").test(value)){
+                    return '用户名不能有特殊字符';
+                }
+                if(/(^\_)|(\__)|(\_+$)/.test(value)){
+                    return '用户名首尾不能出现下划线\'_\'';
+                }
+            }
+        });
+
+        form.on('radio(parentRoleSelect)', function (data) {
+            window.location.replace("/admin/user/role_edit?role_parent="+data.value);
+        });
+
+        form.on('submit(sub)', function(data){
+            var loading = layer.load(1, {shade: [0.1,'#fff']});
+            var str = []
+            $("input[name='Power']:not(:checked)").each(function () {
+                var current = $(this).val();
+                str.push(current)
+            });
+
+            $("#NoCheck").val(str)
+            formSubmit('/admin/user/role_edit_post', $("#form-data").serialize(),"alert","reload")
+            layer.close(loading);
+            return false
+        });
+        form.on('checkbox(powerCheck)', function(obj){
+            checkedValue = this.value;
+            length = checkedValue.length;
+            if (obj.elem.checked) {
+                var parent = []
+                for (i = length; i > 2; ){
+                    i=i-2;
+                    checkedValue = checkedValue.substring(0,checkedValue.length-2)
+                    parent.push(checkedValue)
+                }
+                $("input[name='Power']:not(:checked)").each(function (index, item) {
+                    var current = item.value;
+                    parent.forEach(function (value,i) {
+                        if (current == value){
+                            item.checked = true
+                        }
+                    });
+                });
+            }else{
+                $("input[name='Power']:checked").each(function (index, item) {
+                    var current = item.value;
+                    for (;current.length > 2;){
+                        current = current.substring(0,current.length-2);
+                        if (current == checkedValue){
+                            item.checked = false
+                        }
+                    }
+
+                });
+            }
+            form.render('checkbox');
+        });
+
+        $(".role .layui-form-radio").hover(function () {
+            remark = $(this).prev();
+            layer.tips(remark.attr("data-d"), this, {
+                tips: [3, "#4794ec"]
+            });
+        })
+    })
+</script>
+</body>
+</html>
