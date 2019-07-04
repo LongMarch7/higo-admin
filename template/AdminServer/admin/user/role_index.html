@@ -47,7 +47,7 @@
                     </form>
                 </div>
                 <div class="layui-card-body ">
-                    <table class="layui-table" lay-data="{url:'/admin/user/role_list',page:true,toolbar: '#toolbarTpl',id:'roleListRender'}" lay-filter="roleListAction">
+                    <table class="layui-table" lay-data="{url:'/admin/user/role_list',page:true,toolbar: '#toolbarTpl',id:'listRender'}" lay-filter="listAction">
                         <thead>
                         <tr>
                             <th lay-data="{type:'checkbox'}">ID</th>
@@ -69,20 +69,20 @@
 </body>
 <script type="text/html" id="toolbarTpl">
     <div class="layui-btn-container">
-        <button class="layui-btn layui-btn-sm" lay-event="addRole" ><i class="layui-icon"></i>添加</button>
-        <button class="layui-btn layui-btn-sm" lay-event="startRoles" style="background-color: #5FB878"><i class="layui-icon layui-icon-play"></i>批量开启</button>
-        <button class="layui-btn layui-btn-sm layui-bg-orange" lay-event="stopRoles"><i class="layui-icon layui-icon-pause"></i>批量关闭</button>
-        <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteRoles"><i class="layui-icon layui-icon-delete"></i>批量删除</button>
+        <button class="layui-btn layui-btn-sm" lay-event="add" ><i class="layui-icon"></i>添加</button>
+        <button class="layui-btn layui-btn-sm" lay-event="startBatch" style="background-color: #5FB878"><i class="layui-icon layui-icon-play"></i>批量开启</button>
+        <button class="layui-btn layui-btn-sm layui-bg-orange" lay-event="stopBatch"><i class="layui-icon layui-icon-pause"></i>批量关闭</button>
+        <button class="layui-btn layui-btn-sm layui-btn-danger" lay-event="deleteBatch"><i class="layui-icon layui-icon-delete"></i>批量删除</button>
     </div>
 </script>
 
 <script type="text/html" id="actionTpl">
 {{#  if(d.role_status === 1){ }}
-<a onclick="changeRoleStatus({{d.id}},this)" href="javascript:;"  title="启用">
+<a onclick="changeStatus({{d.id}},this)" href="javascript:;"  title="启用">
     <i class="layui-icon layui-icon-pause"></i>
 </a>
 {{#  } else { }}
-<a  onclick="changeRoleStatus({{d.id}},this)" href="javascript:;"  title="停用">
+<a  onclick="changeStatus({{d.id}},this)" href="javascript:;"  title="停用">
     <i class="layui-icon layui-icon-play"></i>
 </a>
 {{#  } }}

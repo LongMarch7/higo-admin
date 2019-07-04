@@ -16,7 +16,7 @@ layui.use(['table', 'laydate', 'form'], function(){
     form.on('submit(sreach)', function (data) {
         var loading = layer.load(1, {shade: [0.1, '#FF0000']});
 
-        table.reload('userListRender', {
+        table.reload('listRender', {
             page: {
                 curr: 1 //重新从第 1 页开始
             }
@@ -26,38 +26,38 @@ layui.use(['table', 'laydate', 'form'], function(){
         return false
     })
 
-    table.on('toolbar(userListAction)', function(obj){
+    table.on('toolbar(listAction)', function(obj){
         var checkStatus = table.checkStatus(obj.config.id);
         var data = checkStatus.data;
         switch(obj.event){
-            case 'addUser':
+            case 'add':
                 xadmin.open('添加用户','/admin/user/user_edit',600,500);
                 break;
-            case 'startUsers':
-                changeUserStatusWithBatch(data,1);
+            case 'startBatch':
+                changeStatusWithBatch(data,1);
                 break;
-            case 'stopUsers':
-                changeUserStatusWithBatch(data,3);
+            case 'stopBatch':
+                changeStatusWithBatch(data,3);
                 break;
-            case 'deleteUsers':
-                deleteUserWithBatch(data)
+            case 'deleteBatch':
+                deleteWithBatch(data)
                 break;
         };
     });
 
-    table.on('tool(userListAction)', function(obj){
+    table.on('tool(listAction)', function(obj){
         switch(obj.event){
             case 'delete':
-                deleteUser(obj);
+                deleteObj(obj);
                 break
             case 'edit':
-                editUser(obj);
+                editObj(obj);
                 break;
         }
     });
 
 
-    function deleteUser(obj) {
+    function deleteObj(obj) {
         var data = obj.data;
         layer.confirm('确定删除吗', function(index){
             $.ajax({
@@ -78,18 +78,18 @@ layui.use(['table', 'laydate', 'form'], function(){
             });
         });
     }
-    function deleteUserWithBatch(data) {
-        var users = [];
-        var users_name = [];
+    function deleteWithBatch(data) {
+        var list = [];
+        var list_name = [];
         data.forEach(function(value,i) {
-            users.unshift(value.id)
-            users_name.unshift(value.user_login)
+            list.unshift(value.id)
+            list_name.unshift(value.user_login)
         });
-        if (users.length >0 ){
+        if (list.length >0 ){
             layer.confirm('确定删除吗', function(index){
                 $.ajax({
                     url: '/admin/user/user_delete',
-                    data: {"id": users,"name":users_name},
+                    data: {"id": list,"name":list_name},
                     type: "post",
                     dataType: "json",
                     traditional: true,
@@ -97,7 +97,7 @@ layui.use(['table', 'laydate', 'form'], function(){
                         var message = ret.msg + ret.code;
                         if (ret.code === 0) {
                             message = ret.msg
-                            table.reload('userListRender')
+                            table.reload('listRender')
                         }
                         layer.msg(message, {icon: 1, time: 1000}, function () {
                         });
@@ -109,20 +109,20 @@ layui.use(['table', 'laydate', 'form'], function(){
         }
     }
 
-    function editUser(obj){
+    function editObj(obj){
         var data = obj.data;
         xadmin.open('编辑用户','/admin/user/user_edit?user_name='+data.user_login+'&user_id='+data.id,600,500);
     }
 
-    function changeUserStatusWithBatch(data, status) {
-        var users = [];
+    function changeStatusWithBatch(data, status) {
+        var list = [];
         data.forEach(function(value,i) {
-            users.push(value.id)
+            list.push(value.id)
         });
-        if (users.length >0 ){
+        if (list.length >0 ){
             $.ajax({
                 url: '/admin/user/user_status_change',
-                data: {"id": users,"status":status},
+                data: {"id": list,"status":status},
                 type: "post",
                 dataType: "json",
                 traditional: true,
@@ -130,7 +130,7 @@ layui.use(['table', 'laydate', 'form'], function(){
                     var message = ret.msg + ret.code;
                     if (ret.code ===0) {
                         message = ret.msg
-                        table.reload('userListRender')
+                        table.reload('listRender')
                     }
                     layer.msg(message, {icon: 1, time: 1000}, function () {});
                 }
@@ -141,7 +141,7 @@ layui.use(['table', 'laydate', 'form'], function(){
     }
 });
 
-function changeUserStatus(id,obj) {
+function changeStatus(id,obj) {
     var status = 3;
     var title= "停用";
     var cla="layui-icon layui-icon-play";

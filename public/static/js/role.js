@@ -17,7 +17,7 @@ layui.use(['table', 'laydate', 'form'], function(){
     form.on('submit(sreach)', function (data) {
         var loading = layer.load(1, {shade: [0.1, '#FF0000']});
 
-        table.reload('roleListRender', {
+        table.reload('listRender', {
             page: {
                 curr: 1 //重新从第 1 页开始
             }
@@ -27,38 +27,38 @@ layui.use(['table', 'laydate', 'form'], function(){
         return false
     })
 
-    table.on('toolbar(roleListAction)', function(obj){
+    table.on('toolbar(listAction)', function(obj){
         var checkStatus = table.checkStatus(obj.config.id);
         var data = checkStatus.data;
         switch(obj.event){
-            case 'addRole':
+            case 'add':
                 xadmin.open('添加角色','/admin/user/role_edit');
                 break;
-            case 'startRoles':
-                changeRoleStatusWithBatch(data,1);
+            case 'startBatch':
+                changeStatusWithBatch(data,1);
                 break;
-            case 'stopRoles':
-                changeRoleStatusWithBatch(data,2);
+            case 'stopBatch':
+                changeStatusWithBatch(data,2);
                 break;
-            case 'deleteRoles':
-                deleteRoleWithBatch(data)
+            case 'deleteBatch':
+                deleteWithBatch(data)
                 break;
         };
     });
 
-    table.on('tool(roleListAction)', function(obj){
+    table.on('tool(listAction)', function(obj){
         switch(obj.event){
             case 'delete':
-                deleteRole(obj);
+                deleteObj(obj);
                 break
             case 'edit':
-                editRole(obj);
+                editObj(obj);
                 break;
         }
     });
 
 
-    function deleteRole(obj) {
+    function deleteObj(obj) {
         var data = obj.data;
         layer.confirm('确定删除吗', function(index){
             $.ajax({
@@ -79,18 +79,18 @@ layui.use(['table', 'laydate', 'form'], function(){
             });
         });
     }
-    function deleteRoleWithBatch(data) {
-        var roles = [];
-        var roles_name = [];
+    function deleteWithBatch(data) {
+        var list = [];
+        var list_name = [];
         data.forEach(function(value,i) {
-            roles.unshift(value.id)
-            roles_name.unshift(value.role_name)
+            list.unshift(value.id)
+            list_name.unshift(value.role_name)
         });
-        if (roles.length >0 ){
+        if (list.length >0 ){
             layer.confirm('确定删除吗', function(index){
                 $.ajax({
                     url: '/admin/user/role_delete',
-                    data: {"id": roles,"name":roles_name},
+                    data: {"id": list,"name":list_name},
                     type: "post",
                     dataType: "json",
                     traditional: true,
@@ -98,7 +98,7 @@ layui.use(['table', 'laydate', 'form'], function(){
                         var message = ret.msg + ret.code;
                         if (ret.code === 0) {
                             message = ret.msg
-                            table.reload('roleListRender')
+                            table.reload('listRender')
                         }
                         layer.msg(message, {icon: 1, time: 1000}, function () {
                         });
@@ -110,20 +110,20 @@ layui.use(['table', 'laydate', 'form'], function(){
         }
     }
 
-    function editRole(obj){
+    function editObj(obj){
         var data = obj.data;
         xadmin.open('添加角色','/admin/user/role_edit?role_parent='+data.parent_id+'&role_id='+data.id);
     }
 
-    function changeRoleStatusWithBatch(data, status) {
-        var roles = [];
+    function changeStatusWithBatch(data, status) {
+        var list = [];
         data.forEach(function(value,i) {
-            roles.push(value.id)
+            list.push(value.id)
         });
-        if (roles.length >0 ){
+        if (list.length >0 ){
             $.ajax({
                 url: '/admin/user/role_status_change',
-                data: {"id": roles,"status":status},
+                data: {"id": list,"status":status},
                 type: "post",
                 dataType: "json",
                 traditional: true,
@@ -131,7 +131,7 @@ layui.use(['table', 'laydate', 'form'], function(){
                     var message = ret.msg + ret.code;
                     if (ret.code ===0) {
                         message = ret.msg;
-                        table.reload('roleListRender')
+                        table.reload('listRender')
                     }
                     layer.msg(message, {icon: 1, time: 1000}, function () {});
                 }
@@ -143,7 +143,7 @@ layui.use(['table', 'laydate', 'form'], function(){
 });
 
 
-function changeRoleStatus(id,obj) {
+function changeStatus(id,obj) {
     var status = 2;
     var title= "停用";
     var cla="layui-icon layui-icon-play";
